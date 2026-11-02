@@ -204,3 +204,4 @@ No installation or build command is needed.
 - JSON export and import
 - Optional completion sounds
 - Multi-tab synchronization
+##
