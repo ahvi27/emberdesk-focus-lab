@@ -1,0 +1,639 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="theme-color" content="#111827" />
+  <title>EmberDesk | Focus Lab</title>
+
+  <style>
+    :root {
+      color-scheme: dark;
+      --bg: #0b1020;
+      --card: #141d30;
+      --input: #0e1628;
+      --text: #f3f4f6;
+      --muted: #9caac1;
+      --border: #29354d;
+      --accent: #ffbd69;
+      --accent-text: #231605;
+      --success: #74dfb3;
+    }
+
+    body.light {
+      color-scheme: light;
+      --bg: #f5f3ee;
+      --card: #ffffff;
+      --input: #f5f6fa;
+      --text: #172033;
+      --muted: #59657a;
+      --border: #dce1eb;
+      --accent: #f5a742;
+      --accent-text: #231605;
+      --success: #17754f;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      background: var(--bg);
+      color: var(--text);
+      font-family: system-ui, -apple-system, sans-serif;
+      line-height: 1.5;
+    }
+
+    button, input { font: inherit; }
+
+    button {
+      padding: 11px 17px;
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      background: var(--input);
+      color: var(--text);
+      cursor: pointer;
+    }
+
+    button:hover { border-color: var(--accent); }
+
+    :focus-visible {
+      outline: 3px solid var(--accent);
+      outline-offset: 4px;
+    }
+
+    .primary {
+      background: var(--accent);
+      color: var(--accent-text);
+      border-color: var(--accent);
+      font-weight: 750;
+    }
+
+    .app {
+      width: min(1050px, 92%);
+      margin: auto;
+      padding: 30px 0;
+    }
+
+    header, .row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 15px;
+    }
+
+    .brand { font-weight: 850; font-size: 1.3rem; }
+    .brand span { color: var(--accent); }
+    .muted { color: var(--muted); }
+    .hero { padding: 45px 0 28px; }
+
+    .eyebrow {
+      color: var(--accent);
+      text-transform: uppercase;
+      letter-spacing: 3px;
+      font-size: .75rem;
+      font-weight: 800;
+    }
+
+    h1 {
+      font-size: clamp(2.2rem, 6vw, 4rem);
+      letter-spacing: -2px;
+      line-height: 1.1;
+      margin: 12px 0;
+    }
+
+    h2 { margin: 0; font-size: 1.2rem; }
+
+    .grid {
+      display: grid;
+      grid-template-columns: 1fr 1.1fr;
+      gap: 22px;
+      align-items: start;
+    }
+
+    .card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 24px;
+      padding: 27px;
+    }
+
+    .modes {
+      display: flex;
+      gap: 10px;
+      justify-content: center;
+    }
+
+    .modes button[aria-pressed="true"] {
+      color: var(--accent);
+      border-color: var(--accent);
+    }
+
+    .timer-card { text-align: center; }
+
+    .timer {
+      font-size: clamp(4rem, 10vw, 6rem);
+      font-weight: 800;
+      letter-spacing: -4px;
+      margin: 28px 0 12px;
+      font-variant-numeric: tabular-nums;
+    }
+
+    progress {
+      width: 100%;
+      height: 10px;
+      accent-color: var(--accent);
+    }
+
+    .controls {
+      display: flex;
+      justify-content: center;
+      gap: 12px;
+      margin: 25px 0;
+    }
+
+    .stats {
+      margin-top: 22px;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 14px;
+    }
+
+    .stat {
+      background: var(--input);
+      border-radius: 16px;
+      padding: 16px;
+    }
+
+    .stat strong {
+      display: block;
+      font-size: 1.8rem;
+      color: var(--accent);
+    }
+
+    .stat span { color: var(--muted); font-size: .85rem; }
+
+    form { display: flex; gap: 10px; margin: 22px 0; }
+
+    input[type="text"] {
+      min-width: 0;
+      flex: 1;
+      padding: 13px;
+      background: var(--input);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      color: var(--text);
+    }
+
+    .filters {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .filters button { font-size: .85rem; padding: 7px 12px; }
+
+    .filters button[aria-pressed="true"] {
+      background: var(--accent);
+      color: var(--accent-text);
+    }
+
+    ul { list-style: none; padding: 0; margin: 20px 0; }
+
+    .task {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 14px 0;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .task label {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      flex: 1;
+      min-width: 0;
+      cursor: pointer;
+    }
+
+    .task span { overflow-wrap: anywhere; }
+    .task input { width: 18px; height: 18px; accent-color: var(--accent); }
+    .task.done span { text-decoration: line-through; color: var(--muted); }
+    .delete { padding: 6px 10px; color: var(--muted); }
+    .empty { text-align: center; padding: 25px 0; color: var(--muted); }
+    .small { font-size: .85rem; }
+
+    .tip {
+      margin-top: 22px;
+      padding: 18px 22px;
+      border-left: 3px solid var(--accent);
+      background: var(--card);
+      border-radius: 0 14px 14px 0;
+    }
+
+    footer { text-align: center; padding-top: 30px; font-size: .8rem; }
+    #notice { min-height: 24px; color: var(--success); }
+
+    @media (max-width: 760px) {
+      .grid { grid-template-columns: 1fr; }
+      .card { padding: 22px; }
+      header { align-items: flex-start; }
+    }
+
+    @media (prefers-reduced-motion: no-preference) {
+      button { transition: border-color .2s, background .2s; }
+    }
+  </style>
+</head>
+
+<body>
+  <main class="app">
+    <header>
+      <div>
+        <div class="brand">Ember<span>Desk</span> ✦</div>
+        <div class="muted small" id="today"></div>
+      </div>
+      <button id="theme" type="button">Switch to light theme</button>
+    </header>
+
+    <section class="hero">
+      <div class="eyebrow">Your personal focus lab</div>
+      <h1>Small steps.<br />Meaningful progress.</h1>
+      <p class="muted">Choose one task, start a session, and give it your attention.</p>
+    </section>
+
+    <div class="grid">
+      <section class="card timer-card" aria-label="Study timer">
+        <div class="modes" role="group" aria-label="Timer mode">
+          <button type="button" data-mode="focus" aria-pressed="true">
+            Focus · 25m
+          </button>
+          <button type="button" data-mode="break" aria-pressed="false">
+            Break · 5m
+          </button>
+        </div>
+
+        <div id="timer" class="timer" role="timer" aria-label="Time remaining">
+          25:00
+        </div>
+
+        <progress id="progress" max="1500" value="0" aria-label="Session progress"></progress>
+        <p class="muted small" id="timerHint">Ready when you are.</p>
+
+        <div class="controls">
+          <button type="button" class="primary" id="start">Start session</button>
+          <button type="button" id="reset">Reset</button>
+        </div>
+
+        <p id="notice" role="status" aria-live="polite"></p>
+
+        <div class="stats">
+          <div class="stat">
+            <strong id="sessions">0</strong>
+            <span>Focus sessions today</span>
+          </div>
+          <div class="stat">
+            <strong id="minutes">0</strong>
+            <span>Focus minutes today</span>
+          </div>
+        </div>
+      </section>
+
+      <section class="card" aria-labelledby="tasksHeading">
+        <div class="row">
+          <h2 id="tasksHeading">Your task board</h2>
+          <span class="muted small" id="taskCount">0 remaining</span>
+        </div>
+
+        <form id="taskForm">
+          <input
+            id="taskInput"
+            type="text"
+            placeholder="What will you work on?"
+            aria-label="New task"
+            maxlength="140"
+            required
+          />
+          <button class="primary" type="submit">Add</button>
+        </form>
+
+        <div class="filters" role="group" aria-label="Filter tasks">
+          <button type="button" data-filter="all" aria-pressed="true">All</button>
+          <button type="button" data-filter="active" aria-pressed="false">Active</button>
+          <button type="button" data-filter="done" aria-pressed="false">Completed</button>
+        </div>
+
+        <ul id="taskList"></ul>
+        <p id="empty" class="empty">Add your first task to get started.</p>
+
+        <div class="row">
+          <span class="muted small" id="completedCount">0 completed</span>
+          <button type="button" id="clearDone">Clear completed</button>
+        </div>
+      </section>
+    </div>
+
+    <aside class="tip">
+      <strong>Today's focus cue</strong>
+      <p class="muted" id="tip"></p>
+    </aside>
+
+    <footer class="muted">
+      EmberDesk · Your workspace, one focused session at a time.
+    </footer>
+  </main>
+
+  <script>
+    const $ = (selector) => document.querySelector(selector);
+    const STORAGE_KEY = "emberdesk-focus-lab-v1";
+    const durations = { focus: 25 * 60, break: 5 * 60 };
+
+    const tips = [
+      "Make your next task small enough to finish in one session.",
+      "Keep a piece of paper nearby for distracting thoughts.",
+      "Close unrelated tabs before starting your timer.",
+      "Use your break to stretch and look away from the screen.",
+      "When a task feels difficult, write down its first tiny step."
+    ];
+
+    function dayKey() {
+      const date = new Date();
+      return [
+        date.getFullYear(),
+        String(date.getMonth() + 1).padStart(2, "0"),
+        String(date.getDate()).padStart(2, "0")
+      ].join("-");
+    }
+
+    let saved = {};
+
+    try {
+      const parsed = JSON.parse(localStorage.getItem(STORAGE_KEY) || "{}");
+      if (parsed && typeof parsed === "object") saved = parsed;
+    } catch {
+      // The dashboard remains usable if storage is unavailable.
+    }
+
+    const state = {
+      tasks: Array.isArray(saved.tasks)
+        ? saved.tasks
+            .filter(task => task && typeof task.text === "string")
+            .map((task, index) => ({
+              id: typeof task.id === "string" ? task.id : String(index),
+              text: task.text.slice(0, 140),
+              done: Boolean(task.done)
+            }))
+        : [],
+      theme: saved.theme === "light" ? "light" : "dark",
+      day: saved.day,
+      sessions: Number.isSafeInteger(saved.sessions) && saved.sessions >= 0
+        ? saved.sessions : 0
+    };
+
+    let filter = "all";
+    let mode = "focus";
+    let remaining = durations.focus;
+    let running = false;
+    let deadline = 0;
+
+    function save() {
+      try {
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+      } catch {
+        $("#notice").textContent =
+          "Saving is unavailable. Keep this tab open to retain your progress.";
+      }
+    }
+
+    function refreshDay() {
+      const currentDay = dayKey();
+
+      if (state.day !== currentDay) {
+        state.day = currentDay;
+        state.sessions = 0;
+        save();
+      }
+
+      $("#today").textContent = new Date().toLocaleDateString(undefined, {
+        weekday: "long",
+        month: "long",
+        day: "numeric"
+      });
+
+      $("#sessions").textContent = state.sessions;
+      $("#minutes").textContent = state.sessions * 25;
+    }
+
+    function renderTheme() {
+      document.body.classList.toggle("light", state.theme === "light");
+      $("#theme").textContent = state.theme === "light"
+        ? "Switch to dark theme"
+        : "Switch to light theme";
+    }
+
+    function renderTimer() {
+      const minutes = String(Math.floor(remaining / 60)).padStart(2, "0");
+      const seconds = String(remaining % 60).padStart(2, "0");
+      const display = `${minutes}:${seconds}`;
+
+      $("#timer").textContent = display;
+      $("#progress").max = durations[mode];
+      $("#progress").value = durations[mode] - remaining;
+
+      $("#start").textContent = running
+        ? "Pause"
+        : remaining === 0 ? "Start again" : "Start session";
+
+      document.title = running
+        ? `${display} · EmberDesk`
+        : "EmberDesk | Focus Lab";
+    }
+
+    function completeSession() {
+      running = false;
+      remaining = 0;
+      refreshDay();
+
+      if (mode === "focus") {
+        state.sessions++;
+        save();
+        refreshDay();
+      }
+
+      $("#timerHint").textContent = mode === "focus"
+        ? "Great work. Take a short break."
+        : "Break complete. Ready for another focus session?";
+
+      $("#notice").textContent = mode === "focus"
+        ? "Focus session completed!"
+        : "Break completed!";
+
+      renderTimer();
+    }
+
+    function tick() {
+      refreshDay();
+      if (!running) return;
+
+      // Use elapsed clock time so background tabs do not slow the timer.
+      remaining = Math.max(0, Math.ceil((deadline - Date.now()) / 1000));
+
+      if (remaining === 0) {
+        completeSession();
+      } else {
+        renderTimer();
+      }
+    }
+
+    function resetTimer() {
+      running = false;
+      remaining = durations[mode];
+      $("#timerHint").textContent = "Ready when you are.";
+      $("#notice").textContent = "";
+      renderTimer();
+    }
+
+    $("#start").addEventListener("click", () => {
+      if (running) {
+        tick();
+        if (!running) return;
+        running = false;
+        $("#timerHint").textContent = "Paused. Continue when you're ready.";
+      } else {
+        if (remaining === 0) remaining = durations[mode];
+        deadline = Date.now() + remaining * 1000;
+        running = true;
+        $("#notice").textContent = "";
+        $("#timerHint").textContent = mode === "focus"
+          ? "One task. Your full attention."
+          : "Rest your eyes and recharge.";
+      }
+
+      renderTimer();
+    });
+
+    $("#reset").addEventListener("click", resetTimer);
+
+    document.querySelectorAll("[data-mode]").forEach(button => {
+      button.addEventListener("click", () => {
+        mode = button.dataset.mode;
+
+        document.querySelectorAll("[data-mode]").forEach(item => {
+          item.setAttribute("aria-pressed", String(item === button));
+        });
+
+        resetTimer();
+      });
+    });
+
+    function renderTasks() {
+      const list = $("#taskList");
+      list.replaceChildren();
+
+      const visible = state.tasks.filter(task => {
+        if (filter === "active") return !task.done;
+        if (filter === "done") return task.done;
+        return true;
+      });
+
+      for (const task of visible) {
+        const item = document.createElement("li");
+        item.className = `task${task.done ? " done" : ""}`;
+
+        const label = document.createElement("label");
+        const checkbox = document.createElement("input");
+        checkbox.type = "checkbox";
+        checkbox.checked = task.done;
+
+        const text = document.createElement("span");
+        text.textContent = task.text;
+
+        checkbox.addEventListener("change", () => {
+          task.done = checkbox.checked;
+          save();
+          renderTasks();
+        });
+
+        label.append(checkbox, text);
+
+        const remove = document.createElement("button");
+        remove.type = "button";
+        remove.className = "delete";
+        remove.textContent = "×";
+        remove.setAttribute("aria-label", `Delete ${task.text}`);
+
+        remove.addEventListener("click", () => {
+          state.tasks = state.tasks.filter(entry => entry !== task);
+          save();
+          renderTasks();
+        });
+
+        item.append(label, remove);
+        list.append(item);
+      }
+
+      const completed = state.tasks.filter(task => task.done).length;
+      $("#taskCount").textContent = `${state.tasks.length - completed} remaining`;
+      $("#completedCount").textContent = `${completed} completed`;
+      $("#clearDone").disabled = completed === 0;
+
+      $("#empty").hidden = visible.length > 0;
+      $("#empty").textContent = state.tasks.length === 0
+        ? "Add your first task to get started."
+        : "No tasks match this filter.";
+    }
+
+    $("#taskForm").addEventListener("submit", event => {
+      event.preventDefault();
+
+      const text = $("#taskInput").value.trim();
+      if (!text) return;
+
+      state.tasks.push({
+        id: `${Date.now()}-${Math.random().toString(36).slice(2)}`,
+        text,
+        done: false
+      });
+
+      $("#taskInput").value = "";
+      save();
+      renderTasks();
+      $("#taskInput").focus();
+    });
+
+    document.querySelectorAll("[data-filter]").forEach(button => {
+      button.addEventListener("click", () => {
+        filter = button.dataset.filter;
+
+        document.querySelectorAll("[data-filter]").forEach(item => {
+          item.setAttribute("aria-pressed", String(item === button));
+        });
+
+        renderTasks();
+      });
+    });
+
+    $("#clearDone").addEventListener("click", () => {
+      state.tasks = state.tasks.filter(task => !task.done);
+      save();
+      renderTasks();
+    });
+
+    $("#theme").addEventListener("click", () => {
+      state.theme = state.theme === "dark" ? "light" : "dark";
+      renderTheme();
+      save();
+    });
+
+    $("#tip").textContent = tips[new Date().getDay() % tips.length];
+
+    refreshDay();
+    renderTheme();
+    renderTasks();
+    renderTimer();
+
+    setInterval(tick, 250);
+    document.addEventListener("visibilitychange", tick);
+  </script>
+</body>
+</html>
